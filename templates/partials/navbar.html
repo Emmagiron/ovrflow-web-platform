@@ -1,0 +1,125 @@
+<nav class="navbar">
+
+    <!-- =========================================
+         LOGO
+    ========================================== -->
+
+    <a href="/" class="logo">
+
+        <div class="logo-icon">
+
+            O
+
+        </div>
+
+        <div class="logo-text">
+
+            <h1>
+                <span class="ovr">OVR</span>FLOW
+            </h1>
+
+            <small>
+                STREETWEAR PREMIUM
+            </small>
+
+        </div>
+
+    </a>
+
+    <!-- =========================================
+         NAV LINKS
+    ========================================== -->
+
+    <ul class="nav-links">
+
+        <li>
+            <a href="/" class="active">
+                Inicio
+            </a>
+        </li>
+
+        <li>
+            <a href="/quienes-somos">
+                Quiénes Somos
+            </a>
+        </li>
+
+        <li>
+            <a href="/emprender">
+                Mayorista
+            </a>
+        </li>
+
+        {% if session.get('role') == 'admin' %}
+
+            <li>
+                <a href="/admin" class="admin-link">
+                    Panel
+                </a>
+            </li>
+
+            <li>
+                <a href="/logout" class="logout-link">
+                    Salir
+                </a>
+            </li>
+
+        {% else %}
+
+            <li>
+                <a href="/login" class="admin-link">
+                    Admin
+                </a>
+            </li>
+
+        {% endif %}
+
+    </ul>
+
+    <!-- =========================================
+         MOBILE MENU BUTTON
+    ========================================== -->
+
+    <button class="menu-toggle" id="menuToggle">
+
+        ☰
+
+    </button>
+
+</nav>
+
+<!-- =========================================
+     MOBILE MENU
+========================================= -->
+
+<div class="mobile-menu" id="mobileMenu">
+
+    <a href="/">Inicio</a>
+
+    <a href="/quienes-somos">
+        Quiénes Somos
+    </a>
+
+    <a href="/emprender">
+        Mayorista
+    </a>
+
+    {% if session.get('role') == 'admin' %}
+
+        <a href="/admin">
+            Panel
+        </a>
+
+        <a href="/logout">
+            Salir
+        </a>
+
+    {% else %}
+
+        <a href="/login">
+            Admin
+        </a>
+
+    {% endif %}
+
+</div>

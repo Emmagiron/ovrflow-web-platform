@@ -1,0 +1,415 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Editar Producto | OVRFLOW
+{% endblock %}
+
+{% block content %}
+
+<!-- =========================================
+     ADMIN EDIT SECTION
+========================================= -->
+
+<section class="admin-section">
+
+    <div class="container">
+
+        <!-- HEADER -->
+
+        <div class="admin-header reveal">
+
+            <span class="catalog-mini">
+                PANEL ADMIN
+            </span>
+
+            <h1>
+                Editar Producto
+            </h1>
+
+            <p>
+                Actualizá información, stock,
+                precios e imágenes del producto.
+            </p>
+
+        </div>
+
+        <!-- ALERTAS -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+
+                <div class="alerts-container">
+
+                    {% for category, message in messages %}
+
+                        <div class="alert alert-{{ category }}">
+
+                            {{ message }}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+        {% endwith %}
+
+        <!-- GRID -->
+
+        <div class="edit-grid">
+
+            <!-- =========================================
+                 FORMULARIO
+            ========================================== -->
+
+            <div class="card admin-card reveal">
+
+                <div class="card-top">
+
+                    <div>
+
+                        <span class="mini-badge">
+                            OVRFLOW ADMIN
+                        </span>
+
+                        <h2>
+                            {{ p.nombre }}
+                        </h2>
+
+                    </div>
+
+                </div>
+
+                <!-- FORM -->
+
+                <form
+                    action="{{ url_for('editar_producto', id=p.id) }}"
+                    method="POST"
+                    enctype="multipart/form-data"
+                    class="admin-form"
+                >
+
+                    <!-- CSRF -->
+
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                    >
+
+                    <!-- GRID -->
+
+                    <div class="form-grid">
+
+                        <!-- CODIGO -->
+
+                        <div class="input-group">
+
+                            <label>
+                                Código
+                            </label>
+
+                            <input
+                                type="text"
+                                name="codigo"
+                                value="{{ p.codigo }}"
+                                required
+                            >
+
+                        </div>
+
+                        <!-- NOMBRE -->
+
+                        <div class="input-group">
+
+                            <label>
+                                Nombre
+                            </label>
+
+                            <input
+                                type="text"
+                                name="nombre"
+                                value="{{ p.nombre }}"
+                                required
+                            >
+
+                        </div>
+
+                        <!-- PRECIO -->
+
+                        <div class="input-group">
+
+                            <label>
+                                Precio Unitario
+                            </label>
+
+                            <input
+                                type="number"
+                                name="precio"
+                                value="{{ p.precio }}"
+                                required
+                            >
+
+                        </div>
+
+                        <!-- STOCK -->
+
+                        <div class="input-group">
+
+                            <label>
+                                Stock
+                            </label>
+
+                            <input
+                                type="number"
+                                name="stock"
+                                value="{{ p.stock }}"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <!-- TALLES -->
+
+                    <div class="input-group">
+
+                        <label>
+                            Talles
+                        </label>
+
+                        <input
+                            type="text"
+                            name="talles"
+                            value="{{ p.talles or '' }}"
+                            placeholder="S, M, L, XL"
+                        >
+
+                    </div>
+
+                    <!-- OFERTA -->
+
+                    <div class="form-grid">
+
+                        <div class="input-group">
+
+                            <label>
+                                Precio Oferta
+                            </label>
+
+                            <input
+                                type="number"
+                                name="precio_oferta"
+                                value="{{ p.precio_oferta or '' }}"
+                                placeholder="Ej: 25000"
+                            >
+
+                        </div>
+
+                        <div class="input-group">
+
+                            <label>
+                                Cantidad Oferta
+                            </label>
+
+                            <input
+                                type="number"
+                                name="cantidad_oferta"
+                                value="{{ p.cantidad_oferta or '' }}"
+                                placeholder="Ej: 3"
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <!-- IMAGEN -->
+
+                    <div class="upload-box">
+
+                        <div class="preview-box">
+
+                            <img
+                                id="preview-imagen"
+
+                                src="{{
+                                    p.imagen if p.imagen.startswith('http')
+                                    else url_for(
+                                        'static',
+                                        filename='img/productos/' + p.imagen
+                                    )
+                                    if p.imagen
+                                    else 'https://via.placeholder.com/400x400'
+                                }}"
+
+                                alt="{{ p.nombre }}"
+                            >
+
+                        </div>
+
+                        <div class="upload-info">
+
+                            <label class="upload-label">
+
+                                Cambiar Imagen
+
+                                <input
+                                    type="file"
+                                    name="imagen"
+                                    accept="image/*"
+                                    onchange="previewImage(this)"
+                                    hidden
+                                >
+
+                            </label>
+
+                            <small>
+                                JPG • PNG • WEBP
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <!-- BOTONES -->
+
+                    <div class="form-actions">
+
+                        <button
+                            type="submit"
+                            class="btn-primary"
+                        >
+
+                            Guardar Cambios
+
+                        </button>
+
+                        <a
+                            href="{{ url_for('admin_panel') }}"
+                            class="btn-secondary"
+                        >
+
+                            Cancelar
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+            <!-- =========================================
+                 PREVIEW
+            ========================================== -->
+
+            <div class="card preview-card reveal">
+
+                <span class="mini-badge">
+                    PREVIEW
+                </span>
+
+                <div class="preview-product">
+
+                    <div class="preview-image">
+
+                        <img
+                            id="preview-card-image"
+
+                            src="{{
+                                p.imagen if p.imagen.startswith('http')
+                                else url_for(
+                                    'static',
+                                    filename='img/productos/' + p.imagen
+                                )
+                                if p.imagen
+                                else 'https://via.placeholder.com/400x400'
+                            }}"
+
+                            alt="{{ p.nombre }}"
+                        >
+
+                    </div>
+
+                    <div class="preview-info">
+
+                        <span class="preview-code">
+
+                            COD {{ p.codigo }}
+
+                        </span>
+
+                        <h3 id="preview-name">
+
+                            {{ p.nombre }}
+
+                        </h3>
+
+                        <p class="preview-price" id="preview-price">
+
+                            ${{ "{:,.0f}".format(p.precio) }}
+
+                        </p>
+
+                        {% if p.precio_oferta %}
+
+                        <div class="preview-offer">
+
+                            🔥
+                            {{ p.cantidad_oferta }}
+                            x
+                            ${{ "{:,.0f}".format(p.precio_oferta) }}
+
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     PREVIEW SCRIPT
+========================================= -->
+
+<script>
+
+function previewImage(input) {
+
+    const file =
+        input.files[0];
+
+    if (!file) return;
+
+    const reader =
+        new FileReader();
+
+    reader.onload = function(e) {
+
+        document.getElementById(
+            'preview-imagen'
+        ).src = e.target.result;
+
+        document.getElementById(
+            'preview-card-image'
+        ).src = e.target.result;
+
+    }
+
+    reader.readAsDataURL(file);
+
+}
+
+</script>
+
+{% endblock %}

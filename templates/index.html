@@ -1,0 +1,504 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+OVRFLOW | Streetwear Premium
+{% endblock %}
+
+{% block content %}
+
+<!-- =========================================
+     TOPBAR
+========================================= -->
+
+<div class="topbar">
+
+    🚚 ENVÍOS A TODO EL PAÍS
+    •
+    📍 RESISTENCIA, CHACO
+    •
+    📹 VIDEOLLAMADAS DISPONIBLES
+
+</div>
+
+<!-- =========================================
+     HERO SECTION
+========================================= -->
+
+{% if destacados %}
+
+<section class="hero-section">
+
+    <!-- Fondo Blur -->
+
+    <div class="hero-blur hero-blur-1"></div>
+    <div class="hero-blur hero-blur-2"></div>
+
+    <div class="swiper mySwiper hero-swiper">
+
+        <div class="swiper-wrapper">
+
+            {% for d in destacados %}
+
+            <div class="swiper-slide hero-slide"
+
+                 style="background-image:
+                 linear-gradient(
+                    rgba(2,6,23,.70),
+                    rgba(2,6,23,.92)
+                 ),
+                 url('{{ url_for('static',
+                 filename='img/productos/' + d.imagen)
+                 if d.imagen else
+                 'https://via.placeholder.com/1200x700' }}')">
+
+                <div class="hero-overlay"></div>
+
+                <div class="hero-content reveal">
+
+                    <span class="hero-badge">
+
+                        STREETWEAR PREMIUM
+
+                    </span>
+
+                    <h1>
+
+                        {{ d.nombre }}
+
+                    </h1>
+
+                    <p>
+
+                        Moda urbana oversize premium
+                        para bebés, jóvenes y adultos.
+
+                        Diseños modernos, cómodos
+                        y con identidad streetwear real.
+
+                    </p>
+
+                    <div class="hero-buttons">
+
+                        <button
+                            class="btn-primary"
+
+                            onclick="document
+                            .getElementById('p-{{ d.id }}')
+                            .scrollIntoView({
+                                behavior: 'smooth'
+                            })"
+                        >
+
+                            Ver Producto
+
+                        </button>
+
+                        <a
+                            href="/emprender"
+                            class="btn-secondary"
+                        >
+
+                            Emprender con Nosotros
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        <div class="swiper-pagination"></div>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+<!-- =========================================
+     STATS
+========================================= -->
+
+<section class="stats-section reveal">
+
+    <div class="stat-card">
+
+        <h3>+500</h3>
+
+        <p>Clientes satisfechos</p>
+
+    </div>
+
+    <div class="stat-card">
+
+        <h3>+120</h3>
+
+        <p>Emprendedores</p>
+
+    </div>
+
+    <div class="stat-card">
+
+        <h3>0-40</h3>
+
+        <p>Años</p>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     BRANDS SLIDER
+========================================= -->
+
+<section class="brands-slider">
+
+    <div class="brands-track">
+
+        <span>OVRFLOW</span>
+        <span>STREETWEAR</span>
+        <span>PREMIUM</span>
+        <span>OVERSIZE</span>
+        <span>URBAN</span>
+
+        <span>OVRFLOW</span>
+        <span>STREETWEAR</span>
+        <span>PREMIUM</span>
+        <span>OVERSIZE</span>
+        <span>URBAN</span>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     CATALOGO HEADER
+========================================= -->
+
+<section class="catalog-header reveal">
+
+    <span class="catalog-mini">
+
+        OVRFLOW COLLECTION
+
+    </span>
+
+    <h2>
+
+        Streetwear sin límites
+
+    </h2>
+
+    <p>
+
+        Calidad premium, diseños oversize
+        y estilo urbano auténtico para todas
+        las edades.
+
+    </p>
+
+</section>
+
+<!-- =========================================
+     PRODUCTOS
+========================================= -->
+
+<section class="container">
+
+    <div class="productos-grid">
+
+        {% for p in productos %}
+
+        <article
+            class="card product-card reveal"
+            id="p-{{ p.id }}"
+        >
+
+            <!-- PRODUCT IMAGE -->
+
+            <div class="product-img-container">
+
+                {% if p.precio_oferta %}
+
+                <div class="badge-oferta">
+
+                    🔥 OFERTA
+
+                </div>
+
+                {% endif %}
+
+                <img
+
+                    src="{{ p.imagen if p.imagen.startswith('http')
+                    else url_for('static',
+                    filename='img/productos/' + p.imagen)
+                    if p.imagen else
+                    'https://via.placeholder.com/300' }}"
+
+                    alt="{{ p.nombre }}"
+
+                    loading="lazy"
+
+                >
+
+            </div>
+
+            <!-- PRODUCT INFO -->
+
+            <div class="product-info">
+
+                <span class="codigo">
+
+                    COD {{ p.codigo }}
+
+                </span>
+
+                <h3>
+
+                    {{ p.nombre }}
+
+                </h3>
+
+                <!-- PRICE -->
+
+                <div class="price-box">
+
+                    <p class="precio">
+
+                        ${{ "{:,.0f}".format(p.precio) }}
+
+                    </p>
+
+                    <small>
+
+                        Precio unitario
+
+                    </small>
+
+                </div>
+
+                <!-- OFFER -->
+
+                {% if p.precio_oferta %}
+
+                <div class="oferta-box">
+
+                    🔥
+
+                    {{ p.cantidad_oferta }}
+                    unidades por
+
+                    <strong>
+
+                        ${{ "{:,.0f}".format(p.precio_oferta) }}
+
+                    </strong>
+
+                </div>
+
+                {% endif %}
+
+                <!-- TALLES -->
+
+                {% if p.talles %}
+
+                <label class="label-field">
+
+                    Elegir talle
+
+                </label>
+
+                <select
+                    id="talle-{{ p.id }}"
+                    class="select-talle"
+                >
+
+                    {% for t in p.talles.split(',') %}
+
+                    <option value="{{ t.strip() }}">
+
+                        {{ t.strip() }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+                {% endif %}
+
+                <!-- CANTIDAD -->
+
+                <div class="cantidad-box">
+
+                    <label>
+
+                        Cantidad
+
+                    </label>
+
+                    <input
+
+                        type="number"
+
+                        id="cant-{{ p.id }}"
+
+                        value="1"
+
+                        min="1"
+
+                        max="{{ p.stock }}"
+
+                    >
+
+                </div>
+
+                <!-- STOCK -->
+
+                <div class="stock-box">
+
+                    Disponible:
+                    <strong>
+
+                        {{ p.stock }}
+
+                    </strong>
+
+                    unidades
+
+                </div>
+
+                <!-- BUTTON -->
+
+                <button
+
+            
+                    class="btn-whatsapp"
+                    data-product-id="{{ p.id }}"
+                    onclick="enviarPedido(
+                        '{{ p.codigo }}',
+                        '{{ p.nombre }}',
+                        '{{ p.id }}',
+                        {{ p.precio }},
+                        {{ p.precio_oferta or 0 }},
+                        {{ p.cantidad_oferta or 0 }}
+                    )"
+                    >
+                        Pedir por WhatsApp
+                    </button>
+
+
+                    Pedir por WhatsApp
+
+                </button>
+
+            </div>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     CTA FINAL
+========================================= -->
+
+<section class="cta-final reveal">
+
+    <div class="cta-glow"></div>
+
+    <div class="cta-box">
+
+        <span>
+
+            EMPRENDÉ CON OVRFLOW
+
+        </span>
+
+        <h2>
+
+            Vendé streetwear premium
+
+        </h2>
+
+        <p>
+
+            Te ayudamos a comenzar
+            tu emprendimiento con atención
+            personalizada y productos de calidad.
+
+        </p>
+
+        <div class="cta-buttons">
+
+            <a
+                href="/emprender"
+                class="btn-primary"
+            >
+
+                Más Información
+
+            </a>
+
+            <a
+                href="https://wa.me/5493624866422"
+                target="_blank"
+                class="btn-secondary"
+            >
+
+                Hablar por WhatsApp
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     INSTAGRAM SECTION
+========================================= -->
+
+<section class="instagram-section reveal">
+
+    <span>
+
+        @OVRFLOW.IND
+
+    </span>
+
+    <h2>
+
+        Seguinos en redes
+
+    </h2>
+
+    <p>
+
+        Lanzamientos, ofertas y nuevos drops
+        todas las semanas.
+
+    </p>
+
+    <a
+        href="#"
+        class="btn-primary"
+    >
+
+        Ir a Instagram
+
+    </a>
+
+</section>
+
+{% endblock %}

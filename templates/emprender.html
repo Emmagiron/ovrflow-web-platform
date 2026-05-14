@@ -1,0 +1,327 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Emprendé con OVRFLOW
+{% endblock %}
+
+{% block content %}
+
+<!-- =========================================
+     HERO EMPRENDER
+========================================= -->
+
+<section class="emprender-hero">
+
+    <div class="emprender-overlay"></div>
+
+    <div class="container emprender-hero-content reveal">
+
+        <span class="hero-badge">
+            OVRFLOW MAYORISTA
+        </span>
+
+        <h1>
+
+            Convertí tu negocio
+            en una marca streetwear real
+
+        </h1>
+
+        <p>
+
+            Vendé ropa oversize premium,
+            trabajá con stock real y recibí
+            atención personalizada desde
+            Resistencia, Chaco.
+
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="#form-emprender" class="btn-primary">
+
+                Quiero Emprender
+
+            </a>
+
+            <a href="/" class="btn-secondary">
+
+                Ver Catálogo
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     BENEFICIOS
+========================================= -->
+
+<section class="beneficios-section">
+
+    <div class="container">
+
+        <div class="section-title reveal">
+
+            <span>
+                BENEFICIOS
+            </span>
+
+            <h2>
+                ¿Por qué vender OVRFLOW?
+            </h2>
+
+        </div>
+
+        <div class="beneficios-grid">
+
+            <div class="beneficio-card reveal">
+
+                <div class="beneficio-icon">
+                    🚚
+                </div>
+
+                <h3>
+                    Envíos a todo el país
+                </h3>
+
+                <p>
+                    Trabajamos desde Resistencia
+                    con logística rápida y segura.
+                </p>
+
+            </div>
+
+            <div class="beneficio-card reveal">
+
+                <div class="beneficio-icon">
+                    📹
+                </div>
+
+                <h3>
+                    Videollamadas reales
+                </h3>
+
+                <p>
+                    Conocé el showroom y los productos
+                    antes de realizar tu compra.
+                </p>
+
+            </div>
+
+            <div class="beneficio-card reveal">
+
+                <div class="beneficio-icon">
+                    🔥
+                </div>
+
+                <h3>
+                    Moda oversize premium
+                </h3>
+
+                <p>
+                    Diseños modernos y calidad premium
+                    para todas las edades.
+                </p>
+
+            </div>
+
+            <div class="beneficio-card reveal">
+
+                <div class="beneficio-icon">
+                    💰
+                </div>
+
+                <h3>
+                    Precios mayoristas
+                </h3>
+
+                <p>
+                    Márgenes ideales para showroom,
+                    tienda física o venta online.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     FORMULARIO
+========================================= -->
+
+<section class="emprender-form-section">
+
+    <div class="container emprender-grid">
+
+        <!-- INFO -->
+
+        <div class="emprender-info reveal">
+
+            <span class="catalog-mini">
+                EMPRENDÉ CON OVRFLOW
+            </span>
+
+            <h2>
+
+                Hacelo real.
+                Empezá hoy.
+
+            </h2>
+
+            <p>
+
+                Sumate a nuestra red de emprendedores
+                y accedé a prendas premium con estética
+                urbana moderna.
+
+            </p>
+
+            <ul class="feature-list">
+
+                <li>
+                    ✓ Atención personalizada
+                </li>
+
+                <li>
+                    ✓ Catálogo actualizado
+                </li>
+
+                <li>
+                    ✓ Curva de talles completa
+                </li>
+
+                <li>
+                    ✓ Ayuda para revender
+                </li>
+
+                <li>
+                    ✓ Soporte por WhatsApp
+                </li>
+
+            </ul>
+
+        </div>
+
+        <!-- FORM -->
+
+        <div class="form-card reveal">
+
+            <h3>
+                Solicitar Información
+            </h3>
+
+            <p>
+
+                Completá tus datos y te contactamos.
+
+            </p>
+
+            <form id="form-emprender">
+
+                <input
+                    type="text"
+                    name="nombre"
+                    placeholder="Nombre o Local"
+                    required
+                >
+
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Correo electrónico"
+                    required
+                >
+
+                <input
+                    type="text"
+                    name="whatsapp"
+                    placeholder="WhatsApp"
+                    required
+                >
+
+                <input
+                    type="text"
+                    name="ciudad"
+                    placeholder="Ciudad y Provincia"
+                    required
+                >
+
+                <textarea
+                    name="mensaje"
+                    rows="5"
+                    placeholder="Contanos sobre tu emprendimiento..."
+                ></textarea>
+
+                <button
+                    type="submit"
+                    class="btn-primary btn-full"
+                >
+
+                    ENVIAR POR WHATSAPP
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     JS WHATSAPP
+========================================= -->
+
+<script>
+
+document
+.getElementById('form-emprender')
+.addEventListener('submit', function(e) {
+
+    e.preventDefault();
+
+    const nombre =
+        this.nombre.value;
+
+    const whatsapp_cliente =
+        this.whatsapp.value;
+
+    const ciudad =
+        this.ciudad.value;
+
+    const mensaje =
+        this.mensaje.value;
+
+    const textoWhatsApp =
+
+        `*NUEVA SOLICITUD - OVRFLOW*%0A%0A` +
+
+        `*Nombre:* ${nombre}%0A` +
+
+        `*WhatsApp:* ${whatsapp_cliente}%0A` +
+
+        `*Ciudad:* ${ciudad}%0A` +
+
+        `*Consulta:* ${mensaje || 'Sin mensaje adicional.'}`;
+
+    const tuNumero =
+        "5493624866422";
+
+    window.open(
+        `https://wa.me/${tuNumero}?text=${textoWhatsApp}`,
+        '_blank'
+    );
+
+});
+
+</script>
+
+{% endblock %}

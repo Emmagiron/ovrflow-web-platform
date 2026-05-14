@@ -1,0 +1,582 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Panel Admin | OVRFLOW
+{% endblock %}
+
+{% block content %}
+
+<section class="admin-section">
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <div class="admin-top reveal">
+
+        <div>
+
+            <span class="catalog-mini">
+                OVRFLOW ADMIN
+            </span>
+
+            <h1>
+                Panel de Control
+            </h1>
+
+            <p>
+                Gestioná productos, stock, precios
+                y ofertas de tu tienda.
+            </p>
+
+        </div>
+
+        <div class="admin-actions-top">
+
+            <a href="{{ url_for('public.index') }}" class="btn-secondary">
+                Ver Tienda
+            </a>
+
+            <a href="{{ url_for('logout') }}" class="btn-danger">
+                Cerrar Sesión
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- =========================================
+         ALERTS
+    ========================================== -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+            <div class="flash-alert {{ category }} reveal">
+
+                {{ message }}
+
+            </div>
+
+            {% endfor %}
+
+        {% endif %}
+    {% endwith %}
+
+    <!-- =========================================
+         STATS
+    ========================================== -->
+
+    <div class="stats-grid reveal">
+
+        <div class="stat-card">
+
+            <span>
+                TOTAL PRODUCTOS
+            </span>
+
+            <h2>
+                {{ productos|length }}
+            </h2>
+
+        </div>
+
+        <div class="stat-card warning">
+
+            <span>
+                STOCK CRÍTICO
+            </span>
+
+            <h2>
+
+                {% set bajo_stock = productos | selectattr('stock', 'lt', 6) | list %}
+                {{ bajo_stock|length }}
+
+            </h2>
+
+        </div>
+
+        <div class="stat-card success">
+
+            <span>
+                VALOR INVENTARIO
+            </span>
+
+            <h2>
+
+                {% set total_val = [] %}
+                {% for p in productos %}
+                    {% if total_val.append(p.precio * p.stock) %}
+                    {% endif %}
+                {% endfor %}
+
+                ${{ "{:,.0f}".format(total_val|sum) }}
+
+            </h2>
+
+        </div>
+
+    </div>
+
+    <!-- =========================================
+         FORM ADD PRODUCT
+    ========================================== -->
+
+    <div class="card admin-card reveal">
+
+        <div class="card-top">
+
+            <div>
+
+                <span class="mini-badge">
+                    NUEVO PRODUCTO
+                </span>
+
+                <h2>
+                    Cargar Producto
+                </h2>
+
+            </div>
+
+        </div>
+
+        <form
+            action="{{ url_for('agregar_producto') }}"
+            method="POST"
+            enctype="multipart/form-data"
+            class="admin-form"
+        >
+
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            >
+
+            <!-- GRID -->
+
+            <div class="form-grid">
+
+                <div class="input-group">
+
+                    <label>
+                        Código
+                    </label>
+
+                    <input
+                        type="text"
+                        name="codigo"
+                        placeholder="OV-001"
+                        required
+                    >
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+                        Nombre
+                    </label>
+
+                    <input
+                        type="text"
+                        name="nombre"
+                        placeholder="Remera Oversize"
+                        required
+                    >
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+                        Precio
+                    </label>
+
+                    <input
+                        type="number"
+                        name="precio"
+                        placeholder="25000"
+                        required
+                    >
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+                        Stock
+                    </label>
+
+                    <input
+                        type="number"
+                        name="stock"
+                        placeholder="10"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <!-- OFERTAS -->
+
+            <div class="form-grid">
+
+                <div class="input-group">
+
+                    <label>
+                        Precio Oferta
+                    </label>
+
+                    <input
+                        type="number"
+                        name="precio_oferta"
+                        placeholder="45000"
+                    >
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+                        Cantidad Oferta
+                    </label>
+
+                    <input
+                        type="number"
+                        name="cantidad_oferta"
+                        placeholder="2"
+                    >
+
+                </div>
+
+            </div>
+
+            <!-- TALLES -->
+
+            <div class="input-group">
+
+                <label>
+                    Talles
+                </label>
+
+                <input
+                    type="text"
+                    name="talles"
+                    placeholder="S, M, L, XL"
+                >
+
+            </div>
+
+            <!-- IMAGE -->
+
+            <div class="upload-box">
+
+                <div class="preview-box">
+
+                    <img
+                        id="preview_img"
+                        src="https://via.placeholder.com/300x300?text=OVRFLOW"
+                        alt="Preview"
+                    >
+
+                </div>
+
+                <div class="upload-info">
+
+                    <label class="upload-label">
+
+                        Subir Imagen
+
+                        <input
+                            type="file"
+                            name="imagen_archivo"
+                            accept="image/*"
+                            hidden
+                            onchange="previewImage(event)"
+                        >
+
+                    </label>
+
+                    <small>
+                        JPG, PNG o WEBP
+                    </small>
+
+                </div>
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                >
+
+                    Guardar Producto
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- =========================================
+         PRODUCT TABLE
+    ========================================== -->
+
+    <div class="card admin-card reveal">
+
+        <div class="table-header">
+
+            <div>
+
+                <span class="mini-badge">
+                    INVENTARIO
+                </span>
+
+                <h2>
+                    Gestión de Productos
+                </h2>
+
+            </div>
+
+            <input
+                type="text"
+                id="busqueda"
+                placeholder="Buscar producto..."
+                class="search-input"
+                onkeyup="filtrarTabla()"
+            >
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table id="tabla_productos">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Producto
+                        </th>
+
+                        <th>
+                            Código
+                        </th>
+
+                        <th>
+                            Stock
+                        </th>
+
+                        <th>
+                            Precio
+                        </th>
+
+                        <th>
+                            Acciones
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for p in productos %}
+
+                    <tr>
+
+                        <!-- PRODUCT -->
+
+                        <td>
+
+                            <div class="product-row">
+
+                                <img
+
+                                    src="{{
+                                        p.imagen if p.imagen.startswith('http')
+                                        else url_for(
+                                            'static',
+                                            filename='img/productos/' + p.imagen
+                                        )
+                                    }}"
+
+                                    alt="{{ p.nombre }}"
+                                >
+
+                                <div>
+
+                                    <strong class="nombre_text">
+                                        {{ p.nombre }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <!-- CODE -->
+
+                        <td class="codigo_text">
+
+                            {{ p.codigo }}
+
+                        </td>
+
+                        <!-- STOCK -->
+
+                        <td>
+
+                            {% if p.stock < 6 %}
+
+                            <span class="stock-badge danger">
+
+                                ⚠ {{ p.stock }}
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="stock-badge success">
+
+                                ✓ {{ p.stock }}
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- PRICE -->
+
+                        <td class="precio-cell">
+
+                            ${{ "{:,.0f}".format(p.precio) }}
+
+                        </td>
+
+                        <!-- ACTIONS -->
+
+                        <td>
+
+                            <div class="acciones">
+
+                                <a
+                                    href="{{ url_for('editar_producto', id=p.id) }}"
+                                    class="btn-action edit"
+                                >
+
+                                    ✏️
+
+                                </a>
+
+                                <form
+                                    action="{{ url_for('eliminar_producto', id=p.id) }}"
+                                    method="POST"
+                                    onsubmit="return confirm('¿Eliminar producto?')"
+                                >
+
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="{{ csrf_token() }}"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="btn-action delete"
+                                    >
+
+                                        🗑️
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     SCRIPTS
+========================================= -->
+
+<script>
+
+function previewImage(event) {
+
+    const image =
+        document.getElementById('preview_img');
+
+    image.src =
+        URL.createObjectURL(event.target.files[0]);
+
+}
+
+function filtrarTabla() {
+
+    const input =
+        document.getElementById("busqueda");
+
+    const filter =
+        input.value.toLowerCase();
+
+    const rows =
+        document.querySelectorAll("#tabla_productos tbody tr");
+
+    rows.forEach(row => {
+
+        const nombre =
+            row.querySelector(".nombre_text")
+            .innerText.toLowerCase();
+
+        const codigo =
+            row.querySelector(".codigo_text")
+            .innerText.toLowerCase();
+
+        if (
+            nombre.includes(filter) ||
+            codigo.includes(filter)
+        ) {
+
+            row.style.display = "";
+
+        } else {
+
+            row.style.display = "none";
+
+        }
+
+    });
+
+}
+
+</script>
+
+{% endblock %}

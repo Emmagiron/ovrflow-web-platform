@@ -1,0 +1,722 @@
+/* =========================================
+   PRODUCT GRID
+========================================= */
+
+.productos-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(320px, 1fr));
+
+    gap: clamp(1.8rem, 3vw, 2.8rem);
+
+    margin-top: 4rem;
+    margin-bottom: 6rem;
+
+    position: relative;
+
+}
+
+/* =========================================
+   PRODUCT CARD
+========================================= */
+
+.product-card {
+
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: 30px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.06) 0%,
+            rgba(255,255,255,.02) 100%
+        );
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    backdrop-filter: blur(18px);
+
+    isolation: isolate;
+
+    transition:
+        transform .45s cubic-bezier(.22,1,.36,1),
+        box-shadow .45s ease,
+        border-color .45s ease,
+        background .45s ease;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.22),
+        0 25px 55px rgba(0,0,0,.28);
+
+}
+
+/* Glow Border */
+
+.product-card::before {
+
+    content: '';
+
+    position: absolute;
+
+    inset: -1px;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(56,189,248,.45),
+            transparent 35%,
+            rgba(129,140,248,.28),
+            transparent 70%
+        );
+
+    opacity: 0;
+
+    transition: opacity .45s ease;
+
+    z-index: -1;
+
+}
+
+/* Light Reflection */
+
+.product-card::after {
+
+    content: '';
+
+    position: absolute;
+
+    top: -180%;
+
+    left: -55%;
+
+    width: 45%;
+
+    height: 320%;
+
+    background:
+        linear-gradient(
+            120deg,
+            transparent 0%,
+            rgba(255,255,255,.12) 45%,
+            rgba(255,255,255,.28) 50%,
+            rgba(255,255,255,.12) 55%,
+            transparent 100%
+        );
+
+    transform: rotate(18deg);
+
+    transition:
+        top .9s ease,
+        left .9s ease;
+
+    pointer-events: none;
+
+}
+
+/* Hover */
+
+.product-card:hover {
+
+    transform:
+        translateY(-14px)
+        scale(1.02);
+
+    border-color:
+        rgba(56,189,248,.22);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.07),
+            rgba(255,255,255,.03)
+        );
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.4),
+        0 0 45px rgba(56,189,248,.12),
+        0 0 90px rgba(129,140,248,.08);
+
+}
+
+.product-card:hover::before {
+
+    opacity: 1;
+
+}
+
+.product-card:hover::after {
+
+    top: -40%;
+    left: 130%;
+
+}
+
+/* =========================================
+   PRODUCT IMAGE
+========================================= */
+
+.product-img-container {
+
+    position: relative;
+
+    height: 390px;
+
+    overflow: hidden;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.05);
+
+}
+
+.product-img-container img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform .75s cubic-bezier(.22,1,.36,1),
+        filter .45s ease;
+
+    will-change: transform;
+
+}
+
+.product-card:hover .product-img-container img {
+
+    transform: scale(1.09);
+
+    filter:
+        brightness(1.1)
+        contrast(1.06)
+        saturate(1.08);
+
+}
+
+/* Dark Overlay */
+
+.product-img-container::before {
+
+    content: '';
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(2,6,23,.95),
+            rgba(2,6,23,.15) 45%,
+            transparent
+        );
+
+    z-index: 1;
+
+}
+
+/* Soft Glow */
+
+.product-img-container::after {
+
+    content: '';
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(56,189,248,.12),
+            transparent 60%
+        );
+
+    mix-blend-mode: screen;
+
+    opacity: .7;
+
+}
+
+/* =========================================
+   BADGES
+========================================= */
+
+.hero-badge,
+.badge-oferta {
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: .5rem;
+
+    padding:
+        10px 18px;
+
+    border-radius: 999px;
+
+    font-size: .76rem;
+    font-weight: 900;
+
+    letter-spacing: 1.4px;
+
+    text-transform: uppercase;
+
+    background:
+        linear-gradient(
+            135deg,
+            #38bdf8,
+            #818cf8
+        );
+
+    color: white;
+
+    border:
+        1px solid rgba(255,255,255,.16);
+
+    box-shadow:
+        0 0 25px rgba(56,189,248,.28);
+
+    backdrop-filter: blur(10px);
+
+}
+
+.badge-oferta {
+
+    position: absolute;
+
+    top: 18px;
+    left: 18px;
+
+    z-index: 5;
+
+}
+
+/* =========================================
+   PRODUCT INFO
+========================================= */
+
+.product-info {
+
+    position: relative;
+
+    z-index: 2;
+
+    padding: 1.8rem;
+
+}
+
+.codigo {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    margin-bottom: 1rem;
+
+    color: var(--accent);
+
+    font-size: .74rem;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+    opacity: .95;
+
+}
+
+.product-info h3 {
+
+    font-size: clamp(1.35rem, 2vw, 1.6rem);
+
+    margin-bottom: 1rem;
+
+    line-height: 1.2;
+
+    font-weight: 800;
+
+    color: white;
+
+}
+
+/* =========================================
+   PRICES
+========================================= */
+
+.price-box {
+
+    margin-bottom: 1.4rem;
+
+}
+
+.precio {
+
+    font-size: clamp(2rem, 4vw, 2.6rem);
+
+    font-weight: 900;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #cbd5e1
+        );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    line-height: 1;
+
+}
+
+.price-box small {
+
+    display: block;
+
+    margin-top: .4rem;
+
+    color: var(--text-dim);
+
+    font-size: .88rem;
+
+}
+
+/* =========================================
+   OFFER BOX
+========================================= */
+
+.oferta-box {
+
+    margin-bottom: 1.4rem;
+
+    padding: 1rem 1.2rem;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(250,204,21,.12),
+            rgba(250,204,21,.03)
+        );
+
+    border:
+        1px solid rgba(250,204,21,.18);
+
+    color: #fde047;
+
+    font-size: .93rem;
+
+    line-height: 1.6;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.04);
+
+}
+
+/* =========================================
+   LABELS
+========================================= */
+
+.label-field {
+
+    display: inline-block;
+
+    margin-bottom: .7rem;
+
+    font-size: .88rem;
+
+    color: var(--text-dim);
+
+    font-weight: 600;
+
+}
+
+/* =========================================
+   INPUTS
+========================================= */
+
+.select-talle,
+.cantidad-box input {
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    background:
+        rgba(15,23,42,.78);
+
+    color: white;
+
+    outline: none;
+
+    transition:
+        border-color .3s ease,
+        background .3s ease,
+        transform .3s ease,
+        box-shadow .3s ease;
+
+}
+
+.select-talle:focus,
+.cantidad-box input:focus {
+
+    border-color:
+        rgba(56,189,248,.45);
+
+    background:
+        rgba(15,23,42,1);
+
+    box-shadow:
+        0 0 0 4px rgba(56,189,248,.12);
+
+}
+
+/* =========================================
+   TALLE SELECT
+========================================= */
+
+.select-talle {
+
+    width: 100%;
+
+    margin-bottom: 1rem;
+
+    padding: 15px 16px;
+
+    border-radius: 16px;
+
+    font-size: .95rem;
+
+    appearance: none;
+
+}
+
+/* =========================================
+   CANTIDAD
+========================================= */
+
+.cantidad-box {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 1rem;
+
+    margin-bottom: 1.7rem;
+
+}
+
+.cantidad-box label {
+
+    color: var(--text-dim);
+
+    font-size: .95rem;
+
+    font-weight: 600;
+
+}
+
+.cantidad-box input {
+
+    width: 90px;
+
+    padding: 13px;
+
+    border-radius: 14px;
+
+    text-align: center;
+
+    font-weight: 700;
+
+}
+
+/* =========================================
+   PRODUCT BUTTON
+========================================= */
+
+.btn-whatsapp {
+
+    position: relative;
+
+    width: 100%;
+
+    overflow: hidden;
+
+    padding: 16px 20px;
+
+    border: none;
+
+    border-radius: 18px;
+
+    font-size: .95rem;
+    font-weight: 800;
+
+    letter-spacing: .5px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #22c55e,
+            #16a34a
+        );
+
+    color: white;
+
+    cursor: pointer;
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease,
+        opacity .3s ease;
+
+    box-shadow:
+        0 10px 25px rgba(34,197,94,.22);
+
+}
+
+.btn-whatsapp::before {
+
+    content: '';
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            120deg,
+            transparent,
+            rgba(255,255,255,.18),
+            transparent
+        );
+
+    transform: translateX(-120%);
+
+    transition: transform .6s ease;
+
+}
+
+.btn-whatsapp:hover {
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 18px 40px rgba(34,197,94,.35);
+
+}
+
+.btn-whatsapp:hover::before {
+
+    transform: translateX(120%);
+
+}
+
+/* =========================================
+   STOCK CHIP
+========================================= */
+
+.stock-chip {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 1rem;
+
+    padding: 8px 14px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(34,197,94,.08);
+
+    border:
+        1px solid rgba(34,197,94,.18);
+
+    color: #4ade80;
+
+    font-size: .78rem;
+    font-weight: 800;
+
+    backdrop-filter: blur(10px);
+
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+    .productos-grid {
+
+        grid-template-columns: 1fr;
+
+        gap: 2rem;
+
+    }
+
+    .product-card {
+
+        border-radius: 24px;
+
+    }
+
+    .product-img-container {
+
+        height: 320px;
+
+    }
+
+    .product-info {
+
+        padding: 1.4rem;
+
+    }
+
+    .precio {
+
+        font-size: 2rem;
+
+    }
+
+    .btn-whatsapp {
+
+        padding: 15px 18px;
+
+    }
+
+}
+
+/* =========================================
+   REDUCE MOTION
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    * {
+
+        transition: none !important;
+        animation: none !important;
+
+    }
+
+}
