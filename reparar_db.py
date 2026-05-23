@@ -1,45 +1,42 @@
 import sqlite3
+import os
 
-def reparacion_total():
-    conn = sqlite3.connect('proyecto.db')
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+DB_PATH = os.path.join(BASE_DIR, 'proyecto.db')
+
+def actualizar_tabla_ventas():
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
     try:
-        print("Iniciando actualización de estructura (Agregando columna STOCK)...")
+        print("Revisando y actualizando la estructura de la tabla 'ventas'...")
         
-        # 1. Renombramos la tabla actual
-        cursor.execute("ALTER TABLE productos RENAME TO productos_temp")
+        # 1. Borramos la tabla vieja de ventas si quedó mal estructurada o vacía
+        # (Es seguro hacerlo ahora ya que estamos en pleno desarrollo local)
+        cursor.execute("DROP TABLE IF EXISTS ventas")
         
-        # 2. Creamos la tabla con TODAS las columnas que pide tu código
+        # 2. Creamos la tabla 'ventas' con la estructura relacional exacta que pide el panel
         cursor.execute('''
-            CREATE TABLE productos (
+            CREATE TABLE ventas (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nombre TEXT NOT NULL,
-                descripcion TEXT,
-                precio REAL,
-                imagen TEXT,
-                stock INTEGER DEFAULT 0,  -- <-- Aquí está la columna que falta
-                fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
+                producto_id INTEGER NOT NULL,
+                talle TEXT NOT NULL,
+                cantidad INTEGER NOT NULL,
+                precio_unitario REAL NOT NULL,
+                total_venta REAL NOT NULL,
+                fecha_venta DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
             )
         ''')
         
-        # 3. Migramos los datos (ajustamos las columnas según lo que tenías)
-        cursor.execute('''
-            INSERT INTO productos (id, nombre, descripcion, precio, imagen, fecha_creacion)
-            SELECT id, nombre, descripcion, precio, imagen, fecha_creacion FROM productos_temp
-        ''')
-        
-        # 4. Borramos la temporal
-        cursor.execute("DROP TABLE productos_temp")
-        
         conn.commit()
-        print("✅ ¡Estructura actualizada! Columna 'stock' añadida correctamente.")
+        print("✅ ¡Estructura corregida con éxito! Columna 'fecha_venta' creada e inicializada.")
         
     except Exception as e:
         conn.rollback()
-        print(f"❌ Error: {e}")
+        print(f"❌ Error al intentar reparar la base de datos: {e}")
     finally:
         conn.close()
 
 if __name__ == "__main__":
-    reparacion_total()
+    actualizar_tabla_ventas()

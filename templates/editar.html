@@ -1,415 +1,148 @@
-{% extends 'layouts/base.html' %}
-
 {% block title %}
 Editar Producto | OVRFLOW
 {% endblock %}
 
 {% block content %}
 
-<!-- =========================================
-     ADMIN EDIT SECTION
-========================================= -->
-
 <section class="admin-section">
 
-    <div class="container">
-
-        <!-- HEADER -->
-
-        <div class="admin-header reveal">
-
-            <span class="catalog-mini">
-                PANEL ADMIN
-            </span>
-
-            <h1>
-                Editar Producto
-            </h1>
-
-            <p>
-                Actualizá información, stock,
-                precios e imágenes del producto.
-            </p>
-
+    <div class="admin-header reveal">
+        <div>
+            <span class="admin-mini">OVRFLOW INVENTARIO</span>
+            <h1>Editar Producto</h1>
+            <p>Modificá la ficha técnica, precios y ajustá el stock físico exacto por talle.</p>
         </div>
+        <div class="admin-actions-top">
+            <a href="{{ url_for('admin.admin_panel') }}" class="btn-secondary">Volver al Panel</a>
+        </div>
+    </div>
 
-        <!-- ALERTAS -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash-alert {{ category }} reveal">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
+    <div style="max-width: 800px; margin: 0 auto;">
+        <div class="admin-card reveal" style="background: #0f1422; border: 1px solid rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px;">
+            
+            <div class="card-top" style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <span class="mini-badge" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">FICHA ID: #{{ producto.id }}</span>
+                    <h2 style="margin-top: 0.5rem; color: #fff;">Modificar: {{ producto.nombre }}</h2>
+                </div>
+                {% if producto.imagen %}
+                <img src="{{ url_for('static', filename='img/productos/' + producto.imagen) }}" alt="Prenda" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                {% endif %}
+            </div>
 
-                <div class="alerts-container">
+            <form action="{{ url_for('admin.editar_producto', id=producto.id) }}" method="POST" enctype="multipart/form-data" class="admin-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                    {% for category, message in messages %}
-
-                        <div class="alert alert-{{ category }}">
-
-                            {{ message }}
-
-                        </div>
-
-                    {% endfor %}
-
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group" style="display: flex; flex-direction: column;">
+                        <label style="color: var(--text-dim); margin-bottom: 0.4rem; font-size: 0.9rem;">Código Único (SKU)</label>
+                        <input type="text" name="codigo" value="{{ producto.codigo if producto.codigo else '' }}" placeholder="OV-001" required style="padding: 0.6rem; background: #0b0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff;">
+                    </div>
+                    <div class="form-group" style="display: flex; flex-direction: column;">
+                        <label style="color: var(--text-dim); margin-bottom: 0.4rem; font-size: 0.9rem;">Nombre de la Prenda</label>
+                        <input type="text" name="nombre" value="{{ producto.nombre }}" required style="padding: 0.6rem; background: #0b0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff;">
+                    </div>
                 </div>
 
-            {% endif %}
-        {% endwith %}
-
-        <!-- GRID -->
-
-        <div class="edit-grid">
-
-            <!-- =========================================
-                 FORMULARIO
-            ========================================== -->
-
-            <div class="card admin-card reveal">
-
-                <div class="card-top">
-
-                    <div>
-
-                        <span class="mini-badge">
-                            OVRFLOW ADMIN
-                        </span>
-
-                        <h2>
-                            {{ p.nombre }}
-                        </h2>
-
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group" style="display: flex; flex-direction: column;">
+                        <label style="color: var(--text-dim); margin-bottom: 0.4rem; font-size: 0.9rem;">Precio Regular ($)</label>
+                        <input type="number" name="precio" value="{{ producto.precio }}" required style="padding: 0.6rem; background: #0b0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff;">
                     </div>
-
+                    <div class="form-group" style="display: flex; flex-direction: column;">
+                        <label style="color: var(--text-dim); margin-bottom: 0.4rem; font-size: 0.9rem;">Descripción</label>
+                        <input type="text" name="descripcion" value="{{ producto.descripcion if producto.descripcion else '' }}" placeholder="Algodón Premium" style="padding: 0.6rem; background: #0b0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff;">
+                    </div>
                 </div>
 
-                <!-- FORM -->
-
-                <form
-                    action="{{ url_for('editar_producto', id=p.id) }}"
-                    method="POST"
-                    enctype="multipart/form-data"
-                    class="admin-form"
-                >
-
-                    <!-- CSRF -->
-
-                    <input
-                        type="hidden"
-                        name="csrf_token"
-                        value="{{ csrf_token() }}"
-                    >
-
-                    <!-- GRID -->
-
-                    <div class="form-grid">
-
-                        <!-- CODIGO -->
-
-                        <div class="input-group">
-
-                            <label>
-                                Código
-                            </label>
-
-                            <input
-                                type="text"
-                                name="codigo"
-                                value="{{ p.codigo }}"
-                                required
-                            >
-
-                        </div>
-
-                        <!-- NOMBRE -->
-
-                        <div class="input-group">
-
-                            <label>
-                                Nombre
-                            </label>
-
-                            <input
-                                type="text"
-                                name="nombre"
-                                value="{{ p.nombre }}"
-                                required
-                            >
-
-                        </div>
-
-                        <!-- PRECIO -->
-
-                        <div class="input-group">
-
-                            <label>
-                                Precio Unitario
-                            </label>
-
-                            <input
-                                type="number"
-                                name="precio"
-                                value="{{ p.precio }}"
-                                required
-                            >
-
-                        </div>
-
-                        <!-- STOCK -->
-
-                        <div class="input-group">
-
-                            <label>
-                                Stock
-                            </label>
-
-                            <input
-                                type="number"
-                                name="stock"
-                                value="{{ p.stock }}"
-                                required
-                            >
-
-                        </div>
-
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div class="form-group" style="display: flex; flex-direction: column;">
+                        <label style="color: var(--text-dim); margin-bottom: 0.4rem; font-size: 0.9rem;">Precio Oferta (Opcional)</label>
+                        <input type="number" name="precio_oferta" value="{{ producto.precio_oferta if producto.precio_oferta else '' }}" placeholder="Ej: 21000" style="padding: 0.6rem; background: #0b0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff;">
                     </div>
+                    <div class="form-group" style="display: flex; flex-direction: column;">
+                        <label style="color: var(--text-dim); margin-bottom: 0.4rem; font-size: 0.9rem;">Cantidad Mínima Oferta</label>
+                        <input type="number" name="cantidad_oferta" value="{{ producto.cantidad_oferta if producto.cantidad_oferta else '' }}" placeholder="Ej: 3" style="padding: 0.6rem; background: #0b0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff;">
+                    </div>
+                </div>
 
-                    <!-- TALLES -->
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="color: #38bdf8; font-weight: bold; margin-bottom: 0.5rem; display: block; font-size: 0.95rem;">Auditoría de Stock Físico por Talle</label>
+                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; background: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div style="text-align: center;">
+                            <label style="font-size: 0.8rem; color: var(--text-dim); display: block; margin-bottom: 0.3rem; font-weight: bold;">Talle S</label>
+                            <input type="number" name="stock_S" value="{{ stock_talles.get('S', 0) }}" min="0" style="text-align: center; width: 100%; padding: 0.4rem; border-radius: 4px; background: #0b0f19; color: #fff; border: 1px solid rgba(255,255,255,0.1);">
+                        </div>
+                        <div style="text-align: center;">
+                            <label style="font-size: 0.8rem; color: var(--text-dim); display: block; margin-bottom: 0.3rem; font-weight: bold;">Talle M</label>
+                            <input type="number" name="stock_M" value="{{ stock_talles.get('M', 0) }}" min="0" style="text-align: center; width: 100%; padding: 0.4rem; border-radius: 4px; background: #0b0f19; color: #fff; border: 1px solid rgba(255,255,255,0.1);">
+                        </div>
+                        <div style="text-align: center;">
+                            <label style="font-size: 0.8rem; color: var(--text-dim); display: block; margin-bottom: 0.3rem; font-weight: bold;">Talle L</label>
+                            <input type="number" name="stock_L" value="{{ stock_talles.get('L', 0) }}" min="0" style="text-align: center; width: 100%; padding: 0.4rem; border-radius: 4px; background: #0b0f19; color: #fff; border: 1px solid rgba(255,255,255,0.1);">
+                        </div>
+                        <div style="text-align: center;">
+                            <label style="font-size: 0.8rem; color: var(--text-dim); display: block; margin-bottom: 0.3rem; font-weight: bold;">Talle XL</label>
+                            <input type="number" name="stock_XL" value="{{ stock_talles.get('XL', 0) }}" min="0" style="text-align: center; width: 100%; padding: 0.4rem; border-radius: 4px; background: #0b0f19; color: #fff; border: 1px solid rgba(255,255,255,0.1);">
+                        </div>
+                        <div style="text-align: center;">
+                            <label style="font-size: 0.8rem; color: var(--text-dim); display: block; margin-bottom: 0.3rem; font-weight: bold;">Talle XXL</label>
+                            <input type="number" name="stock_XXL" value="{{ stock_talles.get('XXL', 0) }}" min="0" style="text-align: center; width: 100%; padding: 0.4rem; border-radius: 4px; background: #0b0f19; color: #fff; border: 1px solid rgba(255,255,255,0.1);">
+                        </div>
+                    </div>
+                    <small style="color: var(--text-dim); font-size: 0.75rem; margin-top: 0.4rem; display: block;">El sistema calculará automáticamente las unidades totales basándose en estos valores.</small>
+                </div>
 
-                    <div class="input-group">
-
-                        <label>
-                            Talles
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="color: var(--text-dim); margin-bottom: 0.4rem; font-size: 0.9rem; display: block;">Actualizar Imagen del Producto</label>
+                    <div class="preview-container" style="background: #0b0f19; padding: 1rem; border-radius: 8px; text-align: center; border: 1px dashed rgba(255,255,255,0.1); margin-bottom: 0.8rem;">
+                        <img id="preview_img" src="{{ url_for('static', filename='img/productos/' + producto.imagen) if producto.imagen else url_for('static', filename='img/productos/default.png') }}" alt="Previsualización" style="max-height: 160px; object-fit: cover; border-radius: 6px;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <label class="btn-edit" style="cursor: pointer; background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); color: #fff; font-size: 0.85rem;">
+                            Elegir Nueva Foto
+                            <input type="file" name="imagen_archivo" accept="image/*" hidden onchange="previewImage(event)">
                         </label>
-
-                        <input
-                            type="text"
-                            name="talles"
-                            value="{{ p.talles or '' }}"
-                            placeholder="S, M, L, XL"
-                        >
-
+                        <small style="color: var(--text-dim); font-size: 0.8rem;">Dejá en blanco para conservar la imagen actual.</small>
                     </div>
-
-                    <!-- OFERTA -->
-
-                    <div class="form-grid">
-
-                        <div class="input-group">
-
-                            <label>
-                                Precio Oferta
-                            </label>
-
-                            <input
-                                type="number"
-                                name="precio_oferta"
-                                value="{{ p.precio_oferta or '' }}"
-                                placeholder="Ej: 25000"
-                            >
-
-                        </div>
-
-                        <div class="input-group">
-
-                            <label>
-                                Cantidad Oferta
-                            </label>
-
-                            <input
-                                type="number"
-                                name="cantidad_oferta"
-                                value="{{ p.cantidad_oferta or '' }}"
-                                placeholder="Ej: 3"
-                            >
-
-                        </div>
-
-                    </div>
-
-                    <!-- IMAGEN -->
-
-                    <div class="upload-box">
-
-                        <div class="preview-box">
-
-                            <img
-                                id="preview-imagen"
-
-                                src="{{
-                                    p.imagen if p.imagen.startswith('http')
-                                    else url_for(
-                                        'static',
-                                        filename='img/productos/' + p.imagen
-                                    )
-                                    if p.imagen
-                                    else 'https://via.placeholder.com/400x400'
-                                }}"
-
-                                alt="{{ p.nombre }}"
-                            >
-
-                        </div>
-
-                        <div class="upload-info">
-
-                            <label class="upload-label">
-
-                                Cambiar Imagen
-
-                                <input
-                                    type="file"
-                                    name="imagen"
-                                    accept="image/*"
-                                    onchange="previewImage(this)"
-                                    hidden
-                                >
-
-                            </label>
-
-                            <small>
-                                JPG • PNG • WEBP
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                    <!-- BOTONES -->
-
-                    <div class="form-actions">
-
-                        <button
-                            type="submit"
-                            class="btn-primary"
-                        >
-
-                            Guardar Cambios
-
-                        </button>
-
-                        <a
-                            href="{{ url_for('admin_panel') }}"
-                            class="btn-secondary"
-                        >
-
-                            Cancelar
-
-                        </a>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-            <!-- =========================================
-                 PREVIEW
-            ========================================== -->
-
-            <div class="card preview-card reveal">
-
-                <span class="mini-badge">
-                    PREVIEW
-                </span>
-
-                <div class="preview-product">
-
-                    <div class="preview-image">
-
-                        <img
-                            id="preview-card-image"
-
-                            src="{{
-                                p.imagen if p.imagen.startswith('http')
-                                else url_for(
-                                    'static',
-                                    filename='img/productos/' + p.imagen
-                                )
-                                if p.imagen
-                                else 'https://via.placeholder.com/400x400'
-                            }}"
-
-                            alt="{{ p.nombre }}"
-                        >
-
-                    </div>
-
-                    <div class="preview-info">
-
-                        <span class="preview-code">
-
-                            COD {{ p.codigo }}
-
-                        </span>
-
-                        <h3 id="preview-name">
-
-                            {{ p.nombre }}
-
-                        </h3>
-
-                        <p class="preview-price" id="preview-price">
-
-                            ${{ "{:,.0f}".format(p.precio) }}
-
-                        </p>
-
-                        {% if p.precio_oferta %}
-
-                        <div class="preview-offer">
-
-                            🔥
-                            {{ p.cantidad_oferta }}
-                            x
-                            ${{ "{:,.0f}".format(p.precio_oferta) }}
-
-                        </div>
-
-                        {% endif %}
-
-                    </div>
-
                 </div>
 
-            </div>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <a href="{{ url_for('admin.admin_panel') }}" class="btn-secondary" style="width: 35%; text-align: center; padding: 0.8rem; border-radius: 6px; text-decoration: none; font-weight: bold;">
+                        Cancelar
+                    </a>
+                    <button type="submit" style="width: 65%; background: #38bdf8; color: #000; padding: 0.8rem; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; transition: background 0.2s;">
+                        Confirmar y Guardar Cambios
+                    </button>
+                </div>
 
+            </form>
         </div>
-
     </div>
 
 </section>
 
-<!-- =========================================
-     PREVIEW SCRIPT
-========================================= -->
-
 <script>
-
-function previewImage(input) {
-
-    const file =
-        input.files[0];
-
-    if (!file) return;
-
-    const reader =
-        new FileReader();
-
-    reader.onload = function(e) {
-
-        document.getElementById(
-            'preview-imagen'
-        ).src = e.target.result;
-
-        document.getElementById(
-            'preview-card-image'
-        ).src = e.target.result;
-
+function previewImage(event) {
+    const image = document.getElementById('preview_img');
+    if(event.target.files && event.target.files[0]) {
+        image.src = URL.createObjectURL(event.target.files[0]);
     }
-
-    reader.readAsDataURL(file);
-
 }
-
 </script>
 
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 {% endblock %}

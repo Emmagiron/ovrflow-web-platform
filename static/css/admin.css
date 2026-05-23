@@ -1,3 +1,25 @@
+/* Fuerza el fondo oscuro y variables si el layout viene en blanco */
+body {
+    background-color: #020617 !important; /* El color oscuro de OVRFLOW */
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif;
+}
+
+:root {
+    --text-dim: #cbd5e1;
+    --accent: #38bdf8;
+}
+
+/* Arreglo extra para que los títulos que quedaron negros se vuelvan blancos */
+.admin-header h1 {
+    color: #ffffff !important;
+    -webkit-text-fill-color: initial !important; /* Rescata el color si el gradiente falla */
+}
+
+.admin-header p {
+    color: var(--text-dim) !important;
+}
+
 /* =========================================================
    ✨ ADMIN PANEL — OVRFLOW PRO UI
 ========================================================= */
