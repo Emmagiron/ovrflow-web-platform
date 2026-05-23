@@ -40,18 +40,9 @@ OVRFLOW | Streetwear Premium
             {% for d in destacados %}
 
             <div class="swiper-slide hero-slide"
-
-                 style="background-image:
-                 linear-gradient(
-                    rgba(2,6,23,.70),
-                    rgba(2,6,23,.92)
-                 ),
-                 url('{{ url_for('static',
-                 filename='img/productos/' + d.imagen)
-                 if d.imagen else
-                 'https://via.placeholder.com/1200x700' }}')">
-
+                style="background-image: linear-gradient(rgba(2,6,23,.70), rgba(2,6,23,.92)), url('{{ d.imagen if d.imagen.startswith('http') else url_for('static', filename='img/productos/' + d.imagen) if d.imagen else 'https://via.placeholder.com/1200x700' }}');">
                 <div class="hero-overlay"></div>
+                
 
                 <div class="hero-content reveal">
 
@@ -376,40 +367,20 @@ OVRFLOW | Streetwear Premium
 
                 <!-- BUTTON -->
 
-                <button
-
-            
+                <button 
                     class="btn-whatsapp"
-                    data-product-id="{{ p.id }}"
-                    onclick="enviarPedido(
-                        '{{ p.codigo }}',
-                        '{{ p.nombre }}',
-                        '{{ p.id }}',
-                        {{ p.precio }},
-                        {{ p.precio_oferta or 0 }},
-                        {{ p.cantidad_oferta or 0 }}
-                    )"
-                    >
-                        Pedir por WhatsApp
-                    </button>
-
-
+                    onclick="enviarPedido('{{ p.codigo }}', '{{ p.nombre }}', '{{ p.id }}', {{ p.precio }}, {{ p.precio_oferta or 0 }}, {{ p.cantidad_oferta or 0 }})"
+                >
                     Pedir por WhatsApp
-
                 </button>
-
             </div>
-
         </article>
-
         {% endfor %}
-
     </div>
-
 </section>
 
-<!-- =========================================
-     CTA FINAL
+
+<!-- ========================================= CTA FINAL
 ========================================= -->
 
 <section class="cta-final reveal">
